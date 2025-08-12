@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import Assignment from '@/models/Assignment'
+import User from '@/models/User'
 import { authenticateRequest } from '@/middleware/auth'
 
 export async function GET(request: NextRequest) {
@@ -19,10 +20,23 @@ export async function GET(request: NextRequest) {
     if (user.role === 'teacher') {
       assignments = await Assignment.find({ createdBy: user.userId })
         .populate('createdBy', 'name email')
+        .populate('classId', 'name code')
         .sort({ createdAt: -1 })
+    } else if (user.role === 'student') {
+      // Students only see assignments for their class
+      const userDoc = await User.findById(user.userId)
+      if (!userDoc?.classId) {
+        return NextResponse.json({ assignments: [] })
+      }
+      assignments = await Assignment.find({ classId: userDoc.classId })
+        .populate('createdBy', 'name email')
+        .populate('classId', 'name code')
+        .sort({ deadline: 1 })
     } else {
+      // Admins see all assignments
       assignments = await Assignment.find()
         .populate('createdBy', 'name email')
+        .populate('classId', 'name code')
         .sort({ deadline: 1 })
     }
 
@@ -48,11 +62,11 @@ export async function POST(request: NextRequest) {
 
     await dbConnect()
 
-    const { title, description, course, deadline, maxMarks } = await request.json()
+    const { title, description, course, deadline, maxMarks, classId } = await request.json()
 
-    if (!title || !description || !course || !deadline || !maxMarks) {
+    if (!title || !description || !course || !deadline || !maxMarks || !classId) {
       return NextResponse.json(
-        { message: 'All fields are required' },
+        { message: 'All fields including class are required' },
         { status: 400 }
       )
     }
@@ -64,6 +78,7 @@ export async function POST(request: NextRequest) {
       deadline: new Date(deadline),
       maxMarks: parseInt(maxMarks),
       createdBy: user.userId,
+      classId,
     })
 
     await assignment.save()

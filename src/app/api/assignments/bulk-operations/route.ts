@@ -99,7 +99,7 @@ async function handleBulkDownload(assignmentIds: string[]) {
     const chunks: Buffer[] = []
     archive.on('data', (chunk: Buffer) => chunks.push(chunk))
     
-    return new Promise((resolve) => {
+    return new Promise<NextResponse>((resolve) => {
       archive.on('end', () => {
         const buffer = Buffer.concat(chunks)
         resolve(new NextResponse(buffer, { headers }))

@@ -18,8 +18,11 @@ export default function CreateAssignment() {
     description: '',
     course: '',
     deadline: '',
-    maxMarks: ''
+    maxMarks: '',
+    classId: ''
   })
+  const [classes, setClasses] = useState<Array<{_id: string, name: string, code: string}>>([])
+  const [loadingClasses, setLoadingClasses] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
@@ -40,9 +43,27 @@ export default function CreateAssignment() {
     }
 
     setUser(parsedUser)
+    fetchClasses()
   }, [router])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const fetchClasses = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await fetch('/api/classes', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+      const data = await response.json()
+      setClasses(data.classes || [])
+    } catch (error) {
+      console.error('Error fetching classes:', error)
+    } finally {
+      setLoadingClasses(false)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -121,6 +142,30 @@ export default function CreateAssignment() {
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2 border"
                   placeholder="e.g., Chemistry Lab Report"
                 />
+              </div>
+
+              <div>
+                <label htmlFor="classId" className="block text-sm font-medium text-gray-700">
+                  Class
+                </label>
+                <select
+                  name="classId"
+                  id="classId"
+                  required
+                  value={formData.classId}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2 border"
+                >
+                  <option value="">Select a class</option>
+                  {classes.map((cls) => (
+                    <option key={cls._id} value={cls._id}>
+                      {cls.name} ({cls.code})
+                    </option>
+                  ))}
+                </select>
+                {loadingClasses && (
+                  <p className="mt-1 text-sm text-gray-500">Loading classes...</p>
+                )}
               </div>
 
               <div>

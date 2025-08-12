@@ -63,6 +63,12 @@ export default function Sidebar() {
       roles: ['teacher', 'admin']
     },
     {
+      name: 'Classes',
+      href: '/classes',
+      icon: Users,
+      roles: ['teacher', 'admin']
+    },
+    {
       name: 'Courses',
       href: '/courses',
       icon: BookOpen,
@@ -71,7 +77,7 @@ export default function Sidebar() {
     {
       name: 'Admin Panel',
       href: '/admin',
-      icon: Users,
+      icon: Settings,
       roles: ['admin']
     },
     {

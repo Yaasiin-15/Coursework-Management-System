@@ -7,6 +7,7 @@ export interface IAssignment extends mongoose.Document {
   deadline: Date
   maxMarks: number
   createdBy: mongoose.Types.ObjectId
+  classId: mongoose.Types.ObjectId // Which class this assignment is for
   createdAt: Date
   updatedAt: Date
 }
@@ -38,6 +39,11 @@ const AssignmentSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
+  },
+  classId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Class',
     required: true,
   },
 }, {

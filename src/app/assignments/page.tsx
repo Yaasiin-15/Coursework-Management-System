@@ -34,6 +34,11 @@ interface Assignment {
   deadline: string
   maxMarks: number
   createdBy: string
+  classId?: {
+    _id: string
+    name: string
+    code: string
+  }
   submissionCount?: number
   gradedCount?: number
   createdAt: string
@@ -247,6 +252,11 @@ export default function AssignmentsPage() {
                                   </span>
                                 </span>
                                 <span>{assignment.course}</span>
+                                {assignment.classId && (
+                                  <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs">
+                                    {assignment.classId.name} ({assignment.classId.code})
+                                  </span>
+                                )}
                                 <span>{assignment.maxMarks} marks</span>
                                 {user.role === 'teacher' && (
                                   <span className="flex items-center space-x-1">

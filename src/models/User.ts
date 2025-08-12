@@ -5,6 +5,7 @@ export interface IUser extends mongoose.Document {
   email: string
   role: 'student' | 'teacher' | 'admin'
   passwordHash: string
+  classId?: mongoose.Types.ObjectId // For students - which class they belong to
   createdAt: Date
   updatedAt: Date
 }
@@ -30,6 +31,13 @@ const UserSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: [true, 'Password is required'],
+  },
+  classId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Class',
+    required: function(this: IUser) {
+      return this.role === 'student'
+    },
   },
 }, {
   timestamps: true,
