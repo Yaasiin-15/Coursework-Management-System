@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import Assignment from '@/models/Assignment'
+import User from '@/models/User'
 import { authenticateRequest } from '@/middleware/auth'
 
 export async function GET(

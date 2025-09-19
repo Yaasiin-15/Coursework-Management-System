@@ -6,6 +6,16 @@ export interface IUser extends mongoose.Document {
   role: 'student' | 'teacher' | 'admin'
   passwordHash: string
   classId?: mongoose.Types.ObjectId // For students - which class they belong to
+  notificationSettings?: {
+    emailNotifications: boolean
+    assignmentReminders: boolean
+    gradeNotifications: boolean
+    systemUpdates: boolean
+  }
+  preferences?: {
+    language: string
+    theme: string
+  }
   createdAt: Date
   updatedAt: Date
 }
@@ -32,10 +42,20 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required'],
   },
+  notificationSettings: {
+    emailNotifications: { type: Boolean, default: true },
+    assignmentReminders: { type: Boolean, default: true },
+    gradeNotifications: { type: Boolean, default: true },
+    systemUpdates: { type: Boolean, default: false }
+  },
+  preferences: {
+    language: { type: String, default: 'en' },
+    theme: { type: String, default: 'system' }
+  },
   classId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Class',
-    required: function(this: IUser) {
+    required: function (this: IUser) {
       return this.role === 'student'
     },
   },

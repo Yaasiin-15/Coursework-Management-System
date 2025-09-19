@@ -49,15 +49,27 @@ export default function CreateAssignment() {
   const fetchClasses = async () => {
     try {
       const token = localStorage.getItem('token')
+      console.log('Fetching classes for assignment creation...')
+      
       const response = await fetch('/api/classes', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       })
+      
       const data = await response.json()
-      setClasses(data.classes || [])
+      console.log('Classes API response:', { status: response.status, data })
+      
+      if (response.ok) {
+        setClasses(data.classes || [])
+        console.log('Classes loaded:', data.classes?.length || 0)
+      } else {
+        console.error('Failed to fetch classes:', data.message)
+        setError(`Failed to load classes: ${data.message}`)
+      }
     } catch (error) {
       console.error('Error fetching classes:', error)
+      setError('Failed to load classes. Please refresh the page.')
     } finally {
       setLoadingClasses(false)
     }
@@ -81,6 +93,21 @@ export default function CreateAssignment() {
       return
     }
 
+    // Validate form data
+    if (!formData.classId) {
+      setError('Please select a class for this assignment')
+      setLoading(false)
+      return
+    }
+
+    if (classes.length === 0) {
+      setError('You need to create a class first before creating assignments')
+      setLoading(false)
+      return
+    }
+
+    console.log('Submitting assignment with data:', formData)
+
     try {
       const response = await fetch('/api/assignments', {
         method: 'POST',
@@ -92,14 +119,18 @@ export default function CreateAssignment() {
       })
 
       const data = await response.json()
+      console.log('API response:', { status: response.status, data })
 
       if (response.ok) {
+        console.log('Assignment created successfully, redirecting...')
         router.push('/assignments')
       } else {
-        setError(data.message || 'Failed to create assignment')
+        console.error('API error:', data)
+        setError(data.message || `Failed to create assignment (${response.status})`)
       }
     } catch (error) {
-      setError('An error occurred. Please try again.')
+      console.error('Network error:', error)
+      setError('Network error occurred. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }
@@ -165,6 +196,20 @@ export default function CreateAssignment() {
                 </select>
                 {loadingClasses && (
                   <p className="mt-1 text-sm text-gray-500">Loading classes...</p>
+                )}
+                {!loadingClasses && classes.length === 0 && (
+                  <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <p className="text-sm text-yellow-800">
+                      No classes found. You need to create a class first before creating assignments.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => router.push('/classes')}
+                      className="mt-2 text-sm text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Go to Classes page to create one
+                    </button>
+                  </div>
                 )}
               </div>
 

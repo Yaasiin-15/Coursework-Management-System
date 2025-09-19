@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Submission from '@/models/Submission'
+import User from '@/models/User'
+import Assignment from '@/models/Assignment'
 import { verifyToken } from '@/lib/auth'
 import { plagiarismService } from '@/lib/plagiarismService'
 

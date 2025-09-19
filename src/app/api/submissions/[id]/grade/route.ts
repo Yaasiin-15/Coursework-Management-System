@@ -15,8 +15,8 @@ export async function PUT(
     }
 
     const decoded = verifyToken(token)
-    if (!decoded || decoded.role !== 'teacher') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    if (!decoded || (decoded.role !== 'teacher' && decoded.role !== 'admin')) {
+      return NextResponse.json({ error: 'Unauthorized - Teacher access required' }, { status: 403 })
     }
 
     const { marks, feedback } = await request.json()
@@ -30,23 +30,21 @@ export async function PUT(
     const submission = await Submission.findByIdAndUpdate(
       params.id,
       {
-        marks,
-        feedback,
+        marks: Number(marks),
+        feedback: feedback || '',
         status: 'graded',
         gradedAt: new Date(),
         gradedBy: decoded.userId
       },
       { new: true }
-    ).populate('studentId', 'name email')
+    ).populate('studentId', 'name email').lean()
 
     if (!submission) {
       return NextResponse.json({ error: 'Submission not found' }, { status: 404 })
     }
 
-    // TODO: Send email notification to student about grade
-    // This would integrate with your email service
-
     return NextResponse.json({ 
+      success: true,
       message: 'Grade saved successfully',
       submission 
     })

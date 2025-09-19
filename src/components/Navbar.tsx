@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, LogOut } from 'lucide-react'
+import { Search, LogOut, Menu } from 'lucide-react'
 import NotificationPanel from './NotificationPanel'
 import ThemeToggle from './ThemeToggle'
+import { useSidebar } from '@/contexts/SidebarContext'
+import { useTranslations } from '@/hooks/useTranslations'
 
 interface User {
     id: string
@@ -15,7 +17,9 @@ interface User {
 
 export default function Navbar() {
     const [user, setUser] = useState<User | null>(null)
+    const { isCollapsed, setIsCollapsed } = useSidebar()
     const router = useRouter()
+    const { t } = useTranslations()
 
     useEffect(() => {
         const userData = localStorage.getItem('user')
@@ -36,15 +40,26 @@ export default function Navbar() {
         <nav className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 h-16 transition-colors">
             <div className="h-full px-4 sm:px-6">
                 <div className="flex justify-between items-center h-full">
-                    {/* Search Bar */}
-                    <div className="flex-1 max-w-lg">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Search assignments, courses..."
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors"
-                            />
+                    {/* Mobile menu button and Search Bar */}
+                    <div className="flex items-center flex-1 space-x-4">
+                        {/* Mobile menu button */}
+                        <button
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                            <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                        </button>
+                        
+                        {/* Search Bar */}
+                        <div className="flex-1 max-w-lg">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors text-sm sm:text-base"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -83,7 +98,7 @@ export default function Navbar() {
                             title="Logout"
                         >
                             <LogOut className="w-4 h-4" />
-                            <span className="text-sm hidden sm:inline">Logout</span>
+                            <span className="text-sm hidden sm:inline">{t('logout')}</span>
                         </button>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Submission from '@/models/Submission'
+import User from '@/models/User'
 import { verifyToken } from '@/lib/auth'
-import { createReadStream } from 'fs'
 import { join } from 'path'
 import archiver from 'archiver'
 

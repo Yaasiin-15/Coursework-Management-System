@@ -1,5 +1,10 @@
 import ClassManagement from '@/components/ClassManagement'
+import AuthCheck from '@/components/AuthCheck'
 
 export default function ClassesPage() {
-  return <ClassManagement />
+  return (
+    <AuthCheck requiredRole="teacher">
+      <ClassManagement />
+    </AuthCheck>
+  )
 }

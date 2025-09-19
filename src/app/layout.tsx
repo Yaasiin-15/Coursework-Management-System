@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from '@/contexts/ThemeContext'
+import { AppProvider } from '@/contexts/AppProvider'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { SidebarProvider } from '@/contexts/SidebarContext'
 
@@ -20,13 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider>
+        <AppProvider>
           <NotificationProvider>
             <SidebarProvider>
               {children}
             </SidebarProvider>
           </NotificationProvider>
-        </ThemeProvider>
+        </AppProvider>
       </body>
     </html>
   )

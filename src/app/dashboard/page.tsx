@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/DashboardLayout'
 import GradingInterface from '@/components/GradingInterface'
+import GradingDebug from '@/components/GradingDebug'
 import { GraduationCap, Clock, CheckCircle } from 'lucide-react'
 
 interface User {
@@ -32,7 +33,7 @@ export default function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem('token')
     const userData = localStorage.getItem('user')
-    
+
     if (!token || !userData) {
       router.push('/login')
       return
@@ -90,8 +91,8 @@ export default function Dashboard() {
             Welcome back, {user.name}!
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-300">
-            {user.role === 'teacher' 
-              ? 'Manage your assignments and view student submissions.' 
+            {user.role === 'teacher'
+              ? 'Manage your assignments and view student submissions.'
               : 'View your assignments and submit your work.'
             }
           </p>
@@ -173,13 +174,13 @@ export default function Dashboard() {
               Recent Assignments
             </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-              {user.role === 'teacher' 
-                ? 'Your latest assignments and their status.' 
+              {user.role === 'teacher'
+                ? 'Your latest assignments and their status.'
                 : 'Upcoming assignments and deadlines.'
               }
             </p>
           </div>
-          
+
           {loading ? (
             <div className="p-6 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
@@ -213,22 +214,22 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center justify-between sm:justify-end space-x-4">
                         <div className="text-sm">
                           <span className={getDeadlineColor(assignment.deadline)}>
-                            {daysUntil < 0 
+                            {daysUntil < 0
                               ? `Overdue by ${Math.abs(daysUntil)} day(s)`
                               : daysUntil === 0
-                              ? 'Due today'
-                              : `Due in ${daysUntil} day(s)`
+                                ? 'Due today'
+                                : `Due in ${daysUntil} day(s)`
                             }
                           </span>
                           <div className="text-xs text-gray-500 dark:text-gray-400">
                             {new Date(assignment.deadline).toLocaleDateString()}
                           </div>
                         </div>
-                        
+
                         {user.role === 'teacher' && (
                           <button
                             onClick={() => setSelectedAssignmentForGrading(assignment._id)}
@@ -255,6 +256,9 @@ export default function Dashboard() {
           onClose={() => setSelectedAssignmentForGrading(null)}
         />
       )}
+
+      {/* Debug Component - Remove in production */}
+      <GradingDebug />
     </DashboardLayout>
   )
 }

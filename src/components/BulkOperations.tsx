@@ -68,9 +68,9 @@ export default function BulkOperations({
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 transition-colors">
-      <div className="p-4 border-b dark:border-gray-700">
+      <div className="p-3 sm:p-4 border-b dark:border-gray-700">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
             Bulk Operations
           </h3>
           <button
@@ -83,7 +83,7 @@ export default function BulkOperations({
       </div>
 
       {isOpen && (
-        <div className="p-4 space-y-4">
+        <div className="p-3 sm:p-4 space-y-4">
           {/* Select All */}
           <div className="flex items-center justify-between">
             <button

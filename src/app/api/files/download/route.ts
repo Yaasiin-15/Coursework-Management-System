@@ -12,8 +12,8 @@ export async function GET(request: NextRequest) {
     }
 
     const decoded = verifyToken(token)
-    if (!decoded || decoded.role !== 'teacher') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    if (!decoded || (decoded.role !== 'teacher' && decoded.role !== 'admin')) {
+      return NextResponse.json({ error: 'Unauthorized - Teacher access required' }, { status: 403 })
     }
 
     const { searchParams } = new URL(request.url)

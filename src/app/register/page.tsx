@@ -1,8 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+
+interface Class {
+  _id: string
+  name: string
+  description: string
+}
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -10,11 +16,32 @@ export default function Register() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'student'
+    role: 'student',
+    classId: ''
   })
+  const [classes, setClasses] = useState<Class[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+
+  // Fetch available classes when component mounts
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await fetch('/api/classes/public')
+        if (response.ok) {
+          const data = await response.json()
+          console.log('Fetched classes:', data) // Debug log
+          setClasses(data)
+        } else {
+          console.error('Failed to fetch classes:', response.status)
+        }
+      } catch (error) {
+        console.error('Failed to fetch classes:', error)
+      }
+    }
+    fetchClasses()
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -44,7 +71,8 @@ export default function Register() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: formData.role
+          role: formData.role,
+          classId: formData.role === 'student' ? formData.classId : undefined
         }),
       })
 
@@ -130,6 +158,29 @@ export default function Register() {
                 <option value="teacher">Teacher</option>
               </select>
             </div>
+
+            {formData.role === 'student' && (
+              <div>
+                <label htmlFor="classId" className="block text-sm font-medium text-gray-700">
+                  Select Class
+                </label>
+                <select
+                  id="classId"
+                  name="classId"
+                  value={formData.classId}
+                  onChange={handleChange}
+                  required={formData.role === 'student'}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Select a class...</option>
+                  {classes.map((cls) => (
+                    <option key={cls._id} value={cls._id}>
+                      {cls.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">

@@ -1,38 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
-import dbConnect from '@/lib/mongodb'
+import connectDB from '@/lib/mongodb'
 import Submission from '@/models/Submission'
 import Assignment from '@/models/Assignment'
-import { authenticateRequest } from '@/middleware/auth'
+import { verifyToken } from '@/lib/auth'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = authenticateRequest(request)
-    if (!user || user.role !== 'student') {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 }
-      )
+    const token = request.headers.get('authorization')?.replace('Bearer ', '')
+    
+    if (!token) {
+      return NextResponse.json({ error: 'No token provided' }, { status: 401 })
     }
 
-    await dbConnect()
+    const decoded = verifyToken(token)
+    if (!decoded || decoded.role !== 'student') {
+      return NextResponse.json({ error: 'Unauthorized - Student access required' }, { status: 403 })
+    }
+
+    await connectDB()
 
     // Check if assignment exists and is not overdue
     const assignment = await Assignment.findById(params.id)
     if (!assignment) {
       return NextResponse.json(
-        { message: 'Assignment not found' },
+        { error: 'Assignment not found' },
         { status: 404 }
       )
     }
 
     if (new Date() > new Date(assignment.deadline)) {
       return NextResponse.json(
-        { message: 'Assignment deadline has passed' },
+        { error: 'Assignment deadline has passed' },
         { status: 400 }
       )
     }
@@ -40,12 +43,12 @@ export async function POST(
     // Check if user already submitted
     const existingSubmission = await Submission.findOne({
       assignmentId: params.id,
-      studentId: user.userId
+      studentId: decoded.userId
     })
 
     if (existingSubmission) {
       return NextResponse.json(
-        { message: 'You have already submitted this assignment' },
+        { error: 'You have already submitted this assignment' },
         { status: 400 }
       )
     }
@@ -55,7 +58,7 @@ export async function POST(
 
     if (!file) {
       return NextResponse.json(
-        { message: 'No file uploaded' },
+        { error: 'No file uploaded' },
         { status: 400 }
       )
     }
@@ -81,22 +84,26 @@ export async function POST(
     // Create submission record
     const submission = new Submission({
       assignmentId: params.id,
-      studentId: user.userId,
+      studentId: decoded.userId,
       fileName: file.name,
-      fileUrl: `/uploads/${fileName}`,
+      fileUrl: fileName, // Store relative path
       status: new Date() > new Date(assignment.deadline) ? 'late' : 'submitted'
     })
 
     await submission.save()
 
     return NextResponse.json(
-      { message: 'Assignment submitted successfully', submission },
+      { 
+        success: true,
+        message: 'Assignment submitted successfully', 
+        submission 
+      },
       { status: 201 }
     )
   } catch (error) {
     console.error('Error submitting assignment:', error)
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }

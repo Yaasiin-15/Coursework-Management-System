@@ -1,43 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
-import dbConnect from '@/lib/mongodb'
+import connectDB from '@/lib/mongodb'
 import Submission from '@/models/Submission'
-import { authenticateRequest } from '@/middleware/auth'
+import { verifyToken } from '@/lib/auth'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = authenticateRequest(request)
-    if (!user) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 }
-      )
+    const token = request.headers.get('authorization')?.replace('Bearer ', '')
+    
+    if (!token) {
+      return NextResponse.json({ error: 'No token provided' }, { status: 401 })
     }
 
-    await dbConnect()
+    const decoded = verifyToken(token)
+    if (!decoded) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
+    }
 
-    let submissions
+    await connectDB()
+
+    let submissions = []
     let userSubmission = null
 
-    if (user.role === 'teacher') {
+    if (decoded.role === 'teacher' || decoded.role === 'admin') {
       submissions = await Submission.find({ assignmentId: params.id })
         .populate('studentId', 'name email')
         .sort({ submittedAt: -1 })
+        .lean()
     } else {
-      submissions = []
       userSubmission = await Submission.findOne({ 
         assignmentId: params.id, 
-        studentId: user.userId 
-      })
+        studentId: decoded.userId 
+      }).lean()
     }
 
-    return NextResponse.json({ submissions, userSubmission })
+    return NextResponse.json({ 
+      success: true,
+      submissions, 
+      userSubmission 
+    })
   } catch (error) {
     console.error('Error fetching submissions:', error)
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }

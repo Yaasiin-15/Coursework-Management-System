@@ -20,10 +20,12 @@
     "mongoose": "^8.5.1",
     "multer": "^1.4.5-lts.1",
     "next": "^14.2.31",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
-    "recharts": "^2.15.4"
+    "recharts": "^2.15.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/archiver": "^6.0.3",

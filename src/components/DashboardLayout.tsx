@@ -54,9 +54,9 @@ function DashboardContent({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Sidebar />
-      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'}`}>
+      <div className={`transition-all duration-300 ${isCollapsed ? 'ml-0 lg:ml-16' : 'ml-0 lg:ml-64'}`}>
         <Navbar />
-        <main className="p-4 sm:p-6">
+        <main className="p-3 sm:p-4 lg:p-6">
           {children}
         </main>
       </div>

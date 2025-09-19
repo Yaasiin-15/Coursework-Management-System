@@ -18,6 +18,7 @@ module.exports = {
       },
       screens: {
         'xs': '475px',
+        '3xl': '1600px',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

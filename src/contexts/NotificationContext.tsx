@@ -32,7 +32,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     if (saved) {
       setNotifications(JSON.parse(saved))
     }
-    
+
     // Check for due date reminders
     checkDueDateReminders()
   }, [])
@@ -45,7 +45,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       const response = await fetch('/api/assignments/due-soon', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      
+
       if (response.ok) {
         const { assignments } = await response.json()
         assignments.forEach((assignment: any) => {
@@ -69,7 +69,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       read: false,
       createdAt: new Date()
     }
-    
+
     setNotifications(prev => {
       const updated = [newNotification, ...prev]
       localStorage.setItem('notifications', JSON.stringify(updated))
