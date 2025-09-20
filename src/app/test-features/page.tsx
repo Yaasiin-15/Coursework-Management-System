@@ -7,8 +7,11 @@ import { useNotifications } from '@/contexts/NotificationContext'
 import { Sun, Moon, Bell, Download, BarChart3, Users } from 'lucide-react'
 
 export default function TestFeaturesPage() {
-    const { isDark, toggleTheme } = useTheme()
+    const { actualTheme, setTheme } = useTheme()
     const { addNotification, notifications, unreadCount } = useNotifications()
+
+    const isDark = actualTheme === 'dark'
+    const toggleTheme = () => setTheme(isDark ? 'light' : 'dark')
 
     const testNotification = () => {
         addNotification({
