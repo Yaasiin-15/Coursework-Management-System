@@ -1,42 +1,40 @@
 {
-  "name": "coursework-management",
-  "version": "0.1.0",
+  "name": "coursework-management-system",
+  "version": "1.0.0",
+  "description": "Full-stack coursework management system with Node.js backend and Next.js frontend",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/multer": "^1.4.11",
-    "@types/nodemailer": "^6.4.15",
-    "archiver": "^7.0.1",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "lucide-react": "^0.539.0",
-    "mongoose": "^8.5.1",
-    "multer": "^1.4.5-lts.1",
-    "next": "^14.2.31",
-    "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.14",
-    "react": "^18",
-    "react-dom": "^18",
-    "recharts": "^2.15.4",
-    "xlsx": "^0.18.5"
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "clean": "rm -rf backend/node_modules frontend/node_modules node_modules",
+    "test": "cd backend && npm test && cd ../frontend && npm test",
+    "test:connection": "node test-connection.js",
+    "setup": "node setup.bat"
   },
   "devDependencies": {
-    "@types/archiver": "^6.0.3",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.5",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "keywords": [
+    "coursework",
+    "management",
+    "education",
+    "nodejs",
+    "nextjs",
+    "mongodb",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
 }

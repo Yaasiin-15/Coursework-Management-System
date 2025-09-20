@@ -1,246 +1,280 @@
 # Coursework Management System
 
-A comprehensive web-based platform for managing coursework, assignments, and submissions between teachers and students. Features multi-language support, real-time grading, and comprehensive analytics.
+A comprehensive full-stack web application for managing coursework, assignments, and student submissions. The project is split into a **Node.js/Express backend** and a **Next.js frontend** for better separation of concerns and scalability.
 
-## Features
+## 🏗️ Architecture
 
-### For Teachers
-- Create and manage classes with separate student groups
-- Create and manage assignments with deadlines for specific classes
-- Set mark allocations and course information
-- View all student submissions in one place
-- Grade submissions with detailed feedback and rubrics
-- Track student performance with comprehensive analytics
-- Export grades and class data
-- Bulk operations for efficient class management
+```
+coursework-management/
+├── backend/           # Node.js/Express API server
+│   ├── models/        # Database models (Mongoose)
+│   ├── routes/        # API routes
+│   ├── middleware/    # Authentication & validation
+│   └── server.js      # Express server
+├── frontend/          # Next.js React application
+│   ├── src/app/       # Next.js App Router pages
+│   ├── src/components/# React components
+│   ├── src/contexts/  # React contexts
+│   └── src/lib/       # Utilities & API client
+└── README.md          # This file
+```
+
+## ✨ Features
 
 ### For Students
-- View assignments specific to their assigned class
-- Submit coursework files online before deadlines
-- Track marks and feedback history with detailed grade cards
-- Receive notifications for new assignments and grades
-- View personal analytics and performance trends
-- Multi-language interface support
 
-### For Admins
-- Manage teacher and student accounts
-- Create and manage classes across the system
-- Assign students to appropriate classes
-- View system-wide performance reports
-- System administration and user management
-- Configure system preferences and settings
+- **Dashboard**: View assigned coursework, upcoming deadlines, and grades
+- **Assignment Submission**: Upload files for assignments with deadline tracking
+- **Grade Tracking**: View grades and feedback from teachers
+- **Notifications**: Get notified about new assignments and grade updates
+- **Profile Management**: Update personal information and preferences
 
-## Tech Stack
+### For Teachers
 
-- **Frontend**: Next.js 14 with TypeScript and Tailwind CSS
-- **Backend**: Next.js API Routes with Node.js
+- **Assignment Creation**: Create and manage assignments with file attachments
+- **Student Management**: View and manage students in classes
+- **Grading Interface**: Grade submissions with feedback and file downloads
+- **Analytics**: Track student performance and class statistics
+- **Bulk Operations**: Download all submissions, send notifications
+- **Class Management**: Create and manage classes with student enrollment
+
+### For Administrators
+
+- **User Management**: Manage all users (students, teachers, admins)
+- **System Analytics**: View system-wide statistics and performance
+- **Class Oversight**: Monitor all classes and assignments
+- **Bulk Operations**: Perform administrative tasks across the system
+
+## 🚀 Tech Stack
+
+### Backend
+
+- **Runtime**: Node.js
+- **Framework**: Express.js
 - **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT-based authentication with NextAuth.js
-- **File Storage**: Local file system (can be extended to cloud storage)
-- **Internationalization**: Custom i18n implementation with context-based translations
-- **State Management**: React Context API for theme and language preferences
-- **UI Components**: Custom components with responsive design
+- **Authentication**: JWT (JSON Web Tokens)
+- **File Upload**: Multer
+- **Security**: Helmet, CORS, Rate Limiting
+- **Validation**: Joi
 
-## Getting Started
+### Frontend
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Charts**: Recharts
+- **State Management**: React Context API
+
+## 🏃‍♂️ Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ installed
-- MongoDB running locally or MongoDB Atlas connection
-- npm or yarn package manager
+- Node.js (v18 or higher)
+- MongoDB (local or Atlas)
+- npm or yarn
 
-### Installation
+### 1. Clone the Repository
 
-1. Clone the repository:
 ```bash
 git clone <repository-url>
 cd coursework-management
 ```
 
-2. Install dependencies:
+### 2. Backend Setup
+
 ```bash
+cd backend
 npm install
-```
-
-3. Set up environment variables:
-Create a `.env.local` file in the root directory:
-```env
-MONGODB_URI=mongodb://localhost:27017/coursework-management
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-nextauth-secret-key
-```
-
-4. Start the development server:
-```bash
+cp .env.example .env
+# Edit .env with your configuration
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+The backend will run on `http://localhost:5000`
 
-## Project Structure
+### 3. Frontend Setup
 
-```
-src/
-├── app/                    # Next.js 14+ app directory
-│   ├── api/               # API routes
-│   │   ├── auth/          # Authentication endpoints
-│   │   ├── assignments/   # Assignment management endpoints
-│   │   ├── classes/       # Class management endpoints
-│   │   ├── students/      # Student-specific endpoints
-│   │   ├── submissions/   # Submission handling endpoints
-│   │   ├── user/          # User preferences and profile endpoints
-│   │   └── analytics/     # Analytics and reporting endpoints
-│   ├── assignments/       # Assignment pages
-│   ├── dashboard/         # Dashboard page
-│   ├── settings/          # User settings and preferences
-│   ├── login/            # Login page
-│   └── register/         # Registration page
-├── components/            # Reusable React components
-│   ├── AuthCheck.tsx      # Authentication wrapper
-│   ├── GradingInterface.tsx # Teacher grading tools
-│   ├── StudentGradeView.tsx # Student grade display
-│   ├── ClassManagement.tsx  # Class administration
-│   └── ...               # Other UI components
-├── contexts/             # React Context providers
-│   ├── AppProvider.tsx   # Main app context wrapper
-│   ├── LanguageContext.tsx # Internationalization context
-│   └── ThemeContext.tsx  # Theme management context
-├── hooks/               # Custom React hooks
-│   └── useTranslations.ts # Translation utilities
-├── lib/                 # Utility libraries
-│   ├── auth.ts          # Authentication utilities
-│   ├── mongodb.ts       # Database connection
-│   └── translations.ts  # Translation definitions
-├── models/              # MongoDB/Mongoose models
-│   ├── User.ts
-│   ├── Assignment.ts
-│   └── Submission.ts
-└── types/               # TypeScript type definitions
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local
+# Edit .env.local with backend API URL
+npm run dev
 ```
 
-## Database Schema
+The frontend will run on `http://localhost:3000`
 
-### Users
-- `name`: User's full name
-- `email`: Unique email address
-- `role`: 'student', 'teacher', or 'admin'
-- `passwordHash`: Encrypted password
-- `classId`: Reference to class (for students only)
+## 🔧 Configuration
 
-### Classes
-- `name`: Class name
-- `code`: Unique class code
-- `description`: Optional class description
-- `teacher`: Reference to teacher who manages the class
-- `students`: Array of student references in this class
+### Backend Environment Variables
 
-### Assignments
-- `title`: Assignment title
-- `description`: Detailed instructions
-- `course`: Course name/code
-- `deadline`: Submission deadline
-- `maxMarks`: Maximum possible marks
-- `createdBy`: Reference to teacher who created it
-- `classId`: Reference to class this assignment is for
+```env
+# Database
+MONGODB_URI=mongodb://localhost:27017/coursework
 
-### Submissions
-- `assignmentId`: Reference to assignment
-- `studentId`: Reference to student
-- `fileUrl`: Path to uploaded file
-- `fileName`: Original file name
-- `marks`: Awarded marks (optional)
-- `feedback`: Teacher feedback (optional)
-- `status`: 'submitted', 'graded', or 'late'
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-here
+JWT_EXPIRES_IN=7d
 
-## API Endpoints
+# Server
+PORT=5000
+NODE_ENV=development
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:3000
+```
+
+### Frontend Environment Variables
+
+```env
+# Backend API URL
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+
+# Frontend URL (for development)
+NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000
+```
+
+## 📡 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - User registration
+
+- `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user
+
+### Users
+
+- `GET /api/users` - Get all users (admin only)
+- `GET /api/users/:id` - Get user by ID
+- `PUT /api/users/:id` - Update user profile
+- `PUT /api/users/:id/role` - Update user role (admin only)
 
 ### Classes
-- `GET /api/classes` - List classes (role-based filtering)
-- `POST /api/classes` - Create class (teachers/admins only)
-- `GET /api/classes/[id]` - Get class details
-- `PUT /api/classes/[id]` - Update class information
-- `DELETE /api/classes/[id]` - Delete class
-- `POST /api/classes/[id]/students` - Add student to class
-- `DELETE /api/classes/[id]/students` - Remove student from class
-- `GET /api/classes/[id]/export-grades` - Export class grades
-- `POST /api/classes/bulk-operations` - Bulk class operations
+
+- `GET /api/classes` - Get classes (filtered by role)
+- `POST /api/classes` - Create new class (teacher/admin)
+- `GET /api/classes/:id` - Get class details
+- `POST /api/classes/:id/students` - Add student to class
 
 ### Assignments
-- `GET /api/assignments` - List assignments (filtered by user's class)
-- `POST /api/assignments` - Create assignment (teachers only, requires classId)
-- `GET /api/assignments/[id]` - Get assignment details
-- `PUT /api/assignments/[id]` - Update assignment
-- `DELETE /api/assignments/[id]` - Delete assignment
-- `GET /api/assignments/[id]/submissions` - Get submissions
-- `POST /api/assignments/[id]/submit` - Submit assignment (students only)
 
-### Submissions & Grading
-- `GET /api/submissions/[id]` - Get submission details
-- `POST /api/submissions/[id]/grade` - Grade submission (teachers only)
-- `PUT /api/submissions/[id]` - Update submission
+- `GET /api/assignments` - Get assignments (filtered by role)
+- `POST /api/assignments` - Create assignment (teacher/admin)
+- `GET /api/assignments/:id` - Get assignment details
+- `PUT /api/assignments/:id` - Update assignment
+- `DELETE /api/assignments/:id` - Delete assignment
 
-### Student Data
-- `GET /api/students/grades` - Get student's grades
-- `GET /api/students/grades/[assignmentId]` - Get grades for specific assignment
-- `GET /api/students/unassigned` - Get unassigned students
+### Submissions
 
-### User Management
-- `GET /api/user/profile` - Get user profile
-- `PUT /api/user/profile` - Update user profile
-- `GET /api/user/preferences` - Get user preferences
-- `PUT /api/user/preferences` - Update user preferences
-- `GET /api/user/notifications` - Get user notifications
+- `GET /api/submissions/assignment/:assignmentId` - Get submissions for assignment
+- `POST /api/submissions` - Submit assignment (students)
+- `GET /api/submissions/:id` - Get submission details
+- `PUT /api/submissions/:id/grade` - Grade submission (teacher/admin)
 
 ### Analytics
-- `GET /api/analytics/students` - Get student analytics data
 
-### File Operations
-- `GET /api/files/download` - Download submitted files
+- `GET /api/analytics/dashboard` - Get dashboard analytics
+- `GET /api/analytics/students/:studentId` - Get student performance
 
-## Implemented Features
+### Files
 
-- [x] Complete authentication system with JWT
-- [x] Class management with student assignment
-- [x] Assignment creation and management
-- [x] File upload and submission system
-- [x] Comprehensive grading interface for teachers
-- [x] Student grade viewing with detailed cards
-- [x] Student performance analytics and charts
-- [x] Dark/Light theme toggle
-- [x] Multi-language support (English/Arabic)
-- [x] Bulk operations for teachers
-- [x] File download functionality
-- [x] Grade export functionality
-- [x] User preferences and settings
-- [x] Responsive mobile design
-- [x] Real-time grade status updates
+- `POST /api/files/upload` - Upload file
+- `GET /api/files/:filename` - Download file
+- `DELETE /api/files/:filename` - Delete file
 
-## Features to Implement
+## 🛡️ Security Features
 
-- [ ] Due date reminders and notifications
-- [ ] Email notifications for new assignments and grades
-- [ ] Plagiarism detection integration
-- [ ] Assignment templates and reusable content
-- [ ] Advanced analytics and reporting
-- [ ] Calendar integration
-- [ ] Discussion forums for classes
-- [ ] Peer review assignments
-- [ ] Automated testing for code submissions
-- [ ] Integration with external learning management systems
+- **JWT Authentication**: Secure token-based authentication
+- **Role-based Access Control**: Different permissions for different roles
+- **CORS Protection**: Cross-origin resource sharing configuration
+- **Rate Limiting**: API rate limiting to prevent abuse
+- **Input Validation**: Joi schema validation for all inputs
+- **File Upload Security**: File type and size validation
+- **Password Hashing**: Secure password storage with bcrypt
 
-## Contributing
+## 🎨 UI/UX Features
+
+- **Modern Design**: Clean, responsive interface
+- **Dark/Light Theme**: Toggle with system preference support
+- **Mobile Responsive**: Optimized for all device sizes
+- **Real-time Notifications**: Toast notifications and notification panel
+- **Analytics Dashboard**: Interactive charts and statistics
+- **Accessibility**: WCAG compliant interface
+- **Performance Optimized**: Fast loading with Next.js optimizations
+
+## 🚀 Development
+
+### Backend Development
+
+```bash
+cd backend
+npm run dev  # Start with nodemon for auto-reload
+npm test     # Run tests
+```
+
+### Frontend Development
+
+```bash
+cd frontend
+npm run dev    # Start development server
+npm run build  # Build for production
+npm run lint   # Run ESLint
+```
+
+## 📦 Deployment
+
+### Backend Deployment
+
+- **Railway**: Easy Node.js deployment
+- **Heroku**: Container deployment
+- **AWS EC2**: Virtual machine deployment
+- **DigitalOcean**: Droplet deployment
+
+### Frontend Deployment
+
+- **Vercel**: Automatic deployment with Git integration
+- **Netlify**: Static site hosting
+- **AWS S3 + CloudFront**: Static hosting with CDN
+
+### Docker Deployment
+
+Both backend and frontend can be containerized using Docker for consistent deployment across environments.
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+If you encounter any issues:
+
+1. Check the existing issues on GitHub
+2. Create a new issue with detailed information
+3. Include steps to reproduce the problem
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- Express.js for the robust backend framework
+- MongoDB team for the database
+- Tailwind CSS for the styling system
+- All contributors who helped improve this project
+
+---
+
+## 📚 Additional Documentation
+
+- [Backend Documentation](./backend/README.md)
+- [Frontend Documentation](./frontend/README.md)
+
+For detailed setup instructions and API documentation, please refer to the individual README files in the `backend/` and `frontend/` directories.
